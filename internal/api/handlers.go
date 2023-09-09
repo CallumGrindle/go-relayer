@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,11 +36,19 @@ func executeRequestHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: Validate request params
 
 	transactionRequestChannel := channels.GetTransactionRequestChannel()
-	responseChannel := make(chan types.ExecuteResponse)
+	responseChannel := make(chan types.ExecuteResponse, 1)
+	errorChannel := make(chan error, 1)
 
-	transactionRequestChannel <- types.TransactionForSigning{Request: payload, ResponseChannel: responseChannel}
-	transactionResponse := <-responseChannel
+	transactionRequestChannel <- types.TransactionForSigning{Request: payload, ResponseChannel: responseChannel, ErrorChannel: errorChannel}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(transactionResponse)
+	select {
+	case transactionResponse := <-responseChannel:
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(transactionResponse)
+	case <-errorChannel:
+		http.Error(w, "An error occurred", http.StatusInternalServerError)
+	case <-time.After(5 * time.Second):
+		http.Error(w, "request timed out", http.StatusRequestTimeout)
+
+	}
 }

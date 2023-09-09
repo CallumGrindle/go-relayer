@@ -16,4 +16,14 @@ type ExecuteResponse struct {
 type TransactionForSigning struct {
 	Request         ExecutePayload
 	ResponseChannel chan ExecuteResponse
+	ErrorChannel    chan error
+}
+
+type SignedTransaction struct {
+	SignedTransaction string
+	TransactionHash   string
+}
+
+type DispatchedTransaction struct {
+	TransactionHash string
 }
