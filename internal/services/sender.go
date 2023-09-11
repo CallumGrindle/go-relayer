@@ -19,9 +19,9 @@ func Sender() {
 	}
 }
 
-func sendTransaction(signedTransaction types.SignedTransaction, dispatchedTransactionChannel chan types.DispatchedTransaction) {
+func sendTransaction(signedTransaction types.SignedTransaction, dispatchedTransactionChannel chan types.SignedTransaction) {
 	time.Sleep(1 * time.Second)
 	log.Printf("Got signed transaction: %v", signedTransaction.SignedTransaction)
 
-	dispatchedTransactionChannel <- types.DispatchedTransaction{TransactionHash: signedTransaction.TransactionHash}
+	dispatchedTransactionChannel <- signedTransaction
 }

@@ -4,13 +4,15 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	PrivateKey string
-	Port       uint
+	PrivateKeys []string
+	Port        uint
+	RPC_URL     string
 }
 
 var ApplicationConfig Config
@@ -22,7 +24,13 @@ func InitConfig() Config {
 		log.Fatal("Warning: Could not load .env file", err)
 	}
 
-	ApplicationConfig.PrivateKey = os.Getenv("PRIVATE_KEY")
+	privateKeys := os.Getenv("PRIVATE_KEYS")
+
+	ApplicationConfig = Config{}
+
+	ApplicationConfig.PrivateKeys = strings.Split(privateKeys, ",")
+
+	ApplicationConfig.RPC_URL = os.Getenv("RPC_URL")
 
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 

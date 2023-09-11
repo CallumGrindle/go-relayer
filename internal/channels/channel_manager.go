@@ -7,7 +7,7 @@ import (
 
 var transactionRequestChannel chan types.TransactionForSigning
 var signedTransactionChannel chan types.SignedTransaction
-var dispatchedTransactionChannel chan types.DispatchedTransaction
+var dispatchedTransactionChannel chan types.SignedTransaction
 
 var onceTransactionRequestChannel sync.Once
 var onceSignedTransactionChannel sync.Once
@@ -29,9 +29,9 @@ func GetSignedTransactionChannel() chan types.SignedTransaction {
 	return signedTransactionChannel
 }
 
-func GetDispatchedTransactionChannel() chan types.DispatchedTransaction {
+func GetDispatchedTransactionChannel() chan types.SignedTransaction {
 	onceDispatchedTransactionChannel.Do(func() {
-		dispatchedTransactionChannel = make(chan types.DispatchedTransaction)
+		dispatchedTransactionChannel = make(chan types.SignedTransaction)
 	})
 
 	return dispatchedTransactionChannel

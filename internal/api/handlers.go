@@ -39,7 +39,7 @@ func executeRequestHandler(w http.ResponseWriter, r *http.Request) {
 	responseChannel := make(chan types.ExecuteResponse, 1)
 	errorChannel := make(chan error, 1)
 
-	transactionRequestChannel <- types.TransactionForSigning{Request: payload, ResponseChannel: responseChannel, ErrorChannel: errorChannel}
+	transactionRequestChannel <- types.TransactionForSigning{ExecutePayload: payload, ResponseChannel: responseChannel, ErrorChannel: errorChannel}
 
 	select {
 	case transactionResponse := <-responseChannel:

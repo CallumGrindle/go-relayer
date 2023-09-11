@@ -18,7 +18,7 @@ func Listener() {
 	}
 }
 
-func waitForTransactionConfirmation(dispatchedTransaction types.DispatchedTransaction) {
+func waitForTransactionConfirmation(dispatchedTransaction types.SignedTransaction) {
 	time.Sleep(1 * time.Second)
 	log.Printf("Transaction validated: %v", dispatchedTransaction.TransactionHash)
 }
